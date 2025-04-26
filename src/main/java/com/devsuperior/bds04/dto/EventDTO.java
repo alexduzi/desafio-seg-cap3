@@ -12,12 +12,12 @@ public class EventDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    @NotBlank(message = "Nome não pode ser em branco")
+    @NotBlank(message = "Campo requerido")
     private String name;
-    @FutureOrPresent(message = "Data não pode ser no passado")
+    @FutureOrPresent(message = "A data do evento não pode ser passada")
     private LocalDate date;
     private String url;
-    @NotNull(message = "Id da cidade não pode ser nulo")
+    @NotNull(message = "Campo requerido")
     private Long cityId;
 
     public EventDTO() {

@@ -25,12 +25,12 @@ public class CityService {
     }
 
     @Transactional(readOnly = true)
-    public List<CityDTO> getAll() {
-        return cityRepository.findAll().stream().map(CityDTO::new).toList();
+    public List<CityDTO> findAll() {
+        return cityRepository.findAllByOrderByNameAsc().stream().map(CityDTO::new).toList();
     }
 
     @Transactional(readOnly = true)
-    public CityDTO getById(Long id) {
+    public CityDTO findById(Long id) {
         return cityRepository.findById(id).map(CityDTO::new).orElseThrow(() -> new ResourceNotFoundException(format("City with id: %s not found", id)));
     }
 

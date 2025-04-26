@@ -46,7 +46,7 @@ public class EventService {
     public EventDTO insert(EventDTO dto) {
         Event event = new Event();
         event.setName(dto.getName());
-        event.setDate(LocalDate.now());
+        event.setDate(dto.getDate());
         event.setUrl(dto.getUrl());
         if (dto.getCityId() == null) {
             throw new IllegalArgumentException("City ID cannot be empty");
