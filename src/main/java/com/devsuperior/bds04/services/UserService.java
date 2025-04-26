@@ -7,6 +7,7 @@ import com.devsuperior.bds04.entities.User;
 import com.devsuperior.bds04.exceptions.ResourceNotFoundException;
 import com.devsuperior.bds04.repositories.RoleRepository;
 import com.devsuperior.bds04.repositories.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,13 +21,13 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     private final RoleRepository roleRepository;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = (BCryptPasswordEncoder)passwordEncoder;
         this.roleRepository = roleRepository;
     }
 
@@ -51,7 +52,7 @@ public class UserService {
         }
 
         user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.getRoles().addAll(roles);
         user = userRepository.save(user);
         return new UserDTO(user);

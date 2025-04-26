@@ -19,7 +19,7 @@ public class UserDTO implements Serializable {
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String firstName, String lastName, String email) {
+    public UserDTO(Long id, String email) {
         this.id = id;
         this.email = email;
     }
