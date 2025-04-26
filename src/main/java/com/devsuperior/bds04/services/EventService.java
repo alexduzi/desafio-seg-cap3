@@ -9,12 +9,13 @@ import com.devsuperior.bds04.repositories.CityRepository;
 import com.devsuperior.bds04.repositories.EventRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static java.lang.String.format;
 
@@ -31,14 +32,14 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
-    public List<EventDTO> getAll() {
-        return eventRepository.findAll().stream().map(EventDTO::new).toList();
+    public Page<EventDTO> findAllPaged(Pageable pageable) {
+        Page<Event> events = eventRepository.findAll(pageable);
+        return events.map(EventDTO::new);
     }
 
     @Transactional(readOnly = true)
-    public EventDTO getById(Long id) {
-        return eventRepository.findById(id).map(EventDTO::new)
-                .orElseThrow(() -> new ResourceNotFoundException(format("Event with id: %s not found", id)));
+    public EventDTO findById(Long id) {
+        return eventRepository.findById(id).map(EventDTO::new).orElseThrow(() -> new ResourceNotFoundException(format("Event with id: %s not found", id)));
     }
 
     @Transactional
@@ -47,6 +48,11 @@ public class EventService {
         event.setName(dto.getName());
         event.setDate(LocalDate.now());
         event.setUrl(dto.getUrl());
+        if (dto.getCityId() == null) {
+            throw new IllegalArgumentException("City ID cannot be empty");
+        }
+        City city = cityRepository.findById(dto.getCityId()).orElseThrow(() -> new ResourceNotFoundException(format("City with id: %s not found", dto.getCityId())));
+        event.setCity(city);
         event = eventRepository.save(event);
         return new EventDTO(event);
     }
